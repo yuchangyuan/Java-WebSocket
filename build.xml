@@ -3,7 +3,7 @@
   <target name="compile">
     <mkdir dir="build/classes" />
     <mkdir dir="build/examples" />
-    <javac includeantruntime="false" debug="on" srcdir="src" destdir="build/classes" />
+    <javac includeantruntime="false" target="1.6" source="1.6" debug="on" srcdir="src" destdir="build/classes" />
     <javac includeantruntime="false" srcdir="example" classpath="build/classes" destdir="build/examples" />
   </target>
 
