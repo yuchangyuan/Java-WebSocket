@@ -38,7 +38,7 @@ import org.java_websocket.handshake.Handshakedata;
  * <tt>WebSocketServer</tt> is an abstract class that only takes care of the
  * HTTP handshake portion of WebSockets. It's up to a subclass to add
  * functionality/purpose to the server.
- * 
+ *
  */
 public abstract class WebSocketServer extends WebSocketAdapter implements Runnable {
 
@@ -105,7 +105,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 
 	/**
 	 * Creates a WebSocketServer that will attempt to bind/listen on the given <var>address</var>.
-	 * 
+	 *
 	 * @param address
 	 *            The address (host:port) this server should listen on.
 	 */
@@ -120,7 +120,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 	/**
 	 * Creates a WebSocketServer that will attempt to bind/listen on the given <var>address</var>,
 	 * and comply with <tt>Draft</tt> version <var>draft</var>.
-	 * 
+	 *
 	 * @param address
 	 *            The address (host:port) this server should listen on.
 	 * @param draft
@@ -154,9 +154,9 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 	 * Starts the server selectorthread that binds to the currently set port number and
 	 * listeners for WebSocket connection requests. Creates a fixed thread pool with the size {@link WebSocketServer#DECODERS}<br>
 	 * May only be called once.
-	 * 
+	 *
 	 * Alternatively you can call {@link WebSocketServer#run()} directly.
-	 * 
+	 *
 	 * @throws IllegalStateException
 	 */
 	public void start() {
@@ -169,7 +169,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 	 * Closes all connected clients sockets, then closes the underlying
 	 * ServerSocketChannel, effectively killing the server socket selectorthread and
 	 * freeing the port the server was bound to.
-	 * 
+	 *
 	 * @throws IOException
 	 *             When socket related I/O errors occur.
 	 */
@@ -188,7 +188,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 	 * Returns a WebSocket[] of currently connected clients.
 	 * Its iterators will be failfast and its not judicious
 	 * to modify it.
-	 * 
+	 *
 	 * @return The currently connected clients.
 	 */
 	public Set<WebSocket> connections() {
@@ -197,7 +197,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 
 	/**
 	 * Sets the address (host:port) that this WebSocketServer should listen on.
-	 * 
+	 *
 	 * @param address
 	 *            The address (host:port) to listen on.
 	 */
@@ -211,7 +211,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 
 	/**
 	 * Gets the port number that this server listens on.
-	 * 
+	 *
 	 * @return The port number.
 	 */
 	public int getPort() {
@@ -245,15 +245,21 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 			return;
 		}
 		try {
+			long lastMillis = 0;
 			while ( !selectorthread.isInterrupted() ) {
 				SelectionKey key = null;
 				WebSocketImpl conn = null;
 				try {
 					selector.select();
+					long currMillis = System.currentTimeMillis();
+					System.err.println("------- web socket server select interval " + (currMillis - lastMillis));
+					lastMillis = currMillis;
 					registerWrite();
 
 					Set<SelectionKey> keys = selector.selectedKeys();
 					Iterator<SelectionKey> i = keys.iterator();
+
+					System.err.println("------- web socket server key set size = " + keys.size());
 
 					while ( i.hasNext() ) {
 						key = i.next();
@@ -314,7 +320,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 							iqueue.add( conn );
 						conn.inQueue.put( buf );
 						queue( conn );
-							
+
 					}
 				} catch ( CancelledKeyException e ) {
 					// an other thread may cancel the key
@@ -395,13 +401,13 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 	/**
 	 * Gets the XML string that should be returned if a client requests a Flash
 	 * security policy.
-	 * 
+	 *
 	 * The default implementation allows access from all remote domains, but
 	 * only on the port that this WebSocketServer is listening on.
-	 * 
+	 *
 	 * This is specifically implemented for gitime's WebSocket client for Flash:
 	 * http://github.com/gimite/web-socket-js
-	 * 
+	 *
 	 * @return An XML String that comforms to Flash's security policy. You MUST
 	 *         not include the null char at the end, it is appended automatically.
 	 */
@@ -535,7 +541,7 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 
 		/**
 		 * Allows to wrap the Socketchannel( key.channel() ) to insert a protocol layer( like ssl or proxy authentication) beyond the ws layer.
-		 * 
+		 *
 		 * @param key
 		 *            a SelectionKey of an open SocketChannel.
 		 * @return The channel on which the read and write operations will be performed.<br>
