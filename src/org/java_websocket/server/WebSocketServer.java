@@ -245,15 +245,15 @@ public abstract class WebSocketServer extends WebSocketAdapter implements Runnab
 			return;
 		}
 		try {
-			long lastMillis = 0;
 			while ( !selectorthread.isInterrupted() ) {
 				SelectionKey key = null;
 				WebSocketImpl conn = null;
 				try {
+                    long lastMillis = System.currentTimeMillis();
 					selector.select();
 					long currMillis = System.currentTimeMillis();
 					System.err.println("------- web socket server select interval " + (currMillis - lastMillis));
-					lastMillis = currMillis;
+
 					registerWrite();
 
 					Set<SelectionKey> keys = selector.selectedKeys();
